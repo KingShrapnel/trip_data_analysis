@@ -1,0 +1,252 @@
+---
+title: "cyclistic_trip_data_analysis"
+author: "Kudzai Chisango"
+date: "2023-10-20"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+## Setting up my environment
+
+I first loaded the packages that I decided to use for my data cleaning and analysis processes. These packages were already install iny desktop and cloud versions of R Studio using the install.packages() function. 
+
+```{r setup }
+library("tidyverse")
+library("readr")
+library("ggplot2")
+library("lubridate")
+library("dplyr")
+```
+
+## Uploading and creating data frames
+After loading the required packages I then decided to upload the csv files for my analysis. I uploaded a total of 12 different files with each corresponding to a single calendar month in the the year of 2022. i used the "<- read.csv()" fucntion to upload each csv file into a dataframe.
+
+```{r}
+trips_01_22 <- read.csv("2022-01-cyclistic-tripdata_secs.csv")
+trips_02_22 <- read.csv("2022-02-cyclistic-tripdata_secs.csv")
+trips_03_22 <- read.csv("2022-03-cyclistic-tripdata_secs.csv")
+trips_04_22 <- read.csv("2022-04-cyclistic-tripdata_secs.csv")
+trips_05_22 <- read.csv("2022-05-cyclistic-tripdata_secs.csv")
+trips_06_22 <- read.csv("2022-06-cyclistic-tripdata_secs.csv")
+trips_07_22 <- read.csv("2022-07-cyclistic-tripdata_secs.csv")
+trips_08_22 <- read.csv("2022-08-cyclistic-tripdata_secs.csv")
+trips_09_22 <- read.csv("2022-09-cyclistic-tripdata_secs.csv")
+trips_10_22 <- read.csv("2022-10-cyclistic-tripdata_secs.csv")
+trips_11_22 <- read.csv("2022-11-cyclistic-tripdata_secs.csv")
+trips_12_22 <- read.csv("2022-12-cyclistic-tripdata_secs.csv")
+```
+
+## Initial data exploration
+
+I decided to explore my one of data frames using some Tidyverse functions, namely: View() for a spreadsheet style view of the data, glimpse() to view the columns in a specified table, head() to return the first five rows and colnames() for the column names in each dataframe. This allowed to gleam essential information regarding the newly imported data. 
+
+```{r }
+View("trips_01_22")
+glimpse("trips_01_22")
+head("trips_01_22")
+colnames("trips_01_22")
+```
+
+## Inspecting the dataframes and look for incongruencies
+I also used the str() function to view the str of each dataframe. This allowed me to compare the dataframes for any incongruencies. If the column names had any typos then the intented merge of the dataframes would not work.
+```{r}
+str(trips_01_22)
+str(trips_02_22)
+str(trips_03_22)
+str(trips_04_22)
+str(trips_05_22)
+str(trips_06_22)
+str(trips_07_22)
+str(trips_08_22)
+str(trips_09_22)
+str(trips_10_22)
+str(trips_11_22)
+str(trips_12_22)
+```
+## Fixing formatting issues
+
+Some data where in the wrong format for the ride_length_secs column. Most where formatted as characters whilst a few where in the integer format which prevented the binding of the tables into one giant dataframe. 
+
+Upon attempting to merge the individual monthly dataframes into one big annual dataframe I was met with the following error message: 
+
+"Error in `bind_rows()`:
+! Can't combine `..1$ride_length_secs` <character> and `..2$ride_length_secs` <integer>.
+Run `rlang::last_trace()` to see where the error occurred."
+
+I realised that in some of the tables the data were formatted incorrectly due to having been exported as csv files in Excel, a format which has its limitations. I decided to convert the problematic columns and reformat them. To do so i used the is.factor() function to check if the 'ride_length_secs' column is a Factor or not. The as.numeric() function allowed me to convert the character vectors into numeric vectors. The is.numeric() function allowed me to return a logical value.
+
+```{r}
+is.factor(trips_01_22$ride_length_secs)
+trips_01_22$ride_length_secs <- as.numeric(as.character(trips_01_22$ride_length_secs))
+is.numeric(trips_01_22$ride_length_secs)
+
+is.factor(trips_02_22$ride_length_secs)
+trips_02_22$ride_length_secs <- as.numeric(as.character(trips_02_22$ride_length_secs))
+is.numeric(trips_02_22$ride_length_secs)
+
+is.factor(trips_03_22$ride_length_secs)
+trips_03_22$ride_length_secs <- as.numeric(as.character(trips_03_22$ride_length_secs))
+is.numeric(trips_03_22$ride_length_secs)
+
+is.factor(trips_04_22$ride_length_secs)
+trips_04_22$ride_length_secs <- as.numeric(as.character(trips_04_22$ride_length_secs))
+is.numeric(trips_04_22$ride_length_secs)
+
+is.factor(trips_05_22$ride_length_secs)
+trips_05_22$ride_length_secs <- as.numeric(as.character(trips_05_22$ride_length_secs))
+is.numeric(trips_05_22$ride_length_secs)
+
+is.factor(trips_06_22$ride_length_secs)
+trips_06_22$ride_length_secs <- as.numeric(as.character(trips_06_22$ride_length_secs))
+is.numeric(trips_06_22$ride_length_secs)
+
+is.factor(trips_07_22$ride_length_secs)
+trips_07_22$ride_length_secs <- as.numeric(as.character(trips_07_22$ride_length_secs))
+is.numeric(trips_07_22$ride_length_secs)
+
+is.factor(trips_08_22$ride_length_secs)
+trips_08_22$ride_length_secs <- as.numeric(as.character(trips_08_22$ride_length_secs))
+is.numeric(trips_08_22$ride_length_secs)
+
+is.factor(trips_09_22$ride_length_secs)
+trips_09_22$ride_length_secs <- as.numeric(as.character(trips_09_22$ride_length_secs))
+is.numeric(trips_09_22$ride_length_secs)
+
+is.factor(trips_10_22$ride_length_secs)
+trips_10_22$ride_length_secs <- as.numeric(as.character(trips_10_22$ride_length_secs))
+is.numeric(trips_10_22$ride_length_secs)
+
+is.factor(trips_11_22$ride_length_secs)
+trips_11_22$ride_length_secs <- as.numeric(as.character(trips_11_22$ride_length_secs))
+is.numeric(trips_11_22$ride_length_secs)
+
+is.factor(trips_12_22$ride_length_secs)
+trips_12_22$ride_length_secs <- as.numeric(as.character(trips_12_22$ride_length_secs))
+is.numeric(trips_12_22$ride_length_secs)
+```
+
+## Stacking individual data frames into one big data frame.
+I used the bind.rows() function to combine all of the dataframes into one large 'annual' dataframe for the year of 2022. 
+
+```{r}
+all_trips_22 <- bind_rows(trips_01_22, trips_02_22, trips_03_22, trips_04_22, trips_05_22, trips_06_22, trips_07_22, trips_08_22, trips_09_22, trips_10_22, trips_11_22, trips_12_22)
+```
+
+## Exploring new combine data frame.
+I then used used a few functions to explore the newly created dataframe. This allowed to ensured that all of the columns and rows had merged properly and that they were formatted correctly so that the planned data aggregations and calculations would run properly. 
+
+```{r}
+str(all_trips_22)
+colnames(all_trips_22)
+head(all_trips_22)
+glimpse(all_trips_22)
+nrow(all_trips_22)
+dim(all_trips_22)
+summary(all_trips_22)
+```
+## Cleaning the data & preparation 
+
+I started my preparation for analysis by adding additional columns for easier data aggregation. Without these columns I could only aggregate the data at the ride level, which is too granular. 
+
+The dataframe included a lot of entries when bikes were taken out of docks and checked for quality by Cyclistic or the ride length was negative. I removed these rows so as to not skew the data and calculations. 
+
+Since I was removing data I created a new dataframe and called it "all_trips_22_v2".
+
+Where the "all_trips_22" had 5667717 obs of data, the new. "all_trips_22_v2" had 5,667,617 obs of data. 
+
+```{r}
+
+all_trips_22_v2 <- all_trips_22[!(all_trips_22$start_station_name == "HQ QR" | all_trips_22$ride_length<0),]
+
+all_trips_22_v2$date <- as.Date(all_trips_22_v2$started_at) #The default format is yyyy-mm-dd
+all_trips_22_v2$month <- format(as.Date(all_trips_22_v2$date), "%m")
+all_trips_22_v2$day <- format(as.Date(all_trips_22_v2$date), "%d")
+all_trips_22_v2$year <- format(as.Date(all_trips_22_v2$date), "%Y")
+all_trips_22_v2$day_of_week <- format(as.Date(all_trips_22_v2$date), "%A")
+
+all_trips_22_v2$started_at <- ymd_hm(all_trips_22_v2$started_at)
+```
+## Descriptives
+
+I decided to calculate the mean, median, max and min (in seconds) of the "all_trips_22_v2" dataframe as part of my descriptive analysis. 
+
+I stored each result as a value dataframe. 
+
+The average ride time days where out of order so I fixed them using the ordered() function.
+
+
+
+```{r}
+ride_length_mean <- mean(all_trips_22_v2$ride_length_secs, na.rm=TRUE) #straight average (total ride length / rides)
+ride_length_median <- median(all_trips_22_v2$ride_length_secs, na.rm=TRUE) #midpoint number in the ascending array of ride lengths
+ride_length_max <- max(all_trips_22_v2$ride_length_secs, na.rm=TRUE) #longest ride
+
+aggregate_mean_member_casual <- aggregate(all_trips_22_v2$ride_length_secs ~ all_trips_22_v2$member_casual, FUN = mean)
+View(aggregate_mean_member_casual)
+
+aggregate_median_member_casual <- aggregate(all_trips_22_v2$ride_length_secs ~ all_trips_22_v2$member_casual, FUN = median)
+View(aggregate_median_member_casual)
+
+aggregate_max_member_casual <- aggregate(all_trips_22_v2$ride_length_secs ~ all_trips_22_v2$member_casual, FUN = max)
+View(aggregate_max_member_casual)
+
+aggregate_min_member_casual <- aggregate(all_trips_22_v2$ride_length_secs ~ all_trips_22_v2$member_casual, FUN = min)
+View(aggregate_min_member_casual)
+
+agg_avg_ride_time_member_casual <- aggregate(all_trips_22_v2$ride_length_secs ~ all_trips_22_v2$member_casual + all_trips_22_v2$day_of_week, FUN = mean)
+View(agg_avg_ride_time_member_casual)
+
+ridership_by_type_and_weekday <- all_trips_22_v2 %>% 
+    mutate(weekday = wday(started_at, label = TRUE)) %>%  
+    group_by(member_casual, weekday) %>%  
+    summarise(number_of_rides = n()							 
+              ,average_duration = mean(ride_length_secs)) %>% 		
+    arrange(member_casual, weekday)	
+
+```
+
+## Visualisations
+After running some calculations and storing the output in individual dataframes I decided to visualise some of my finding preliminerily before moving onto a more comprehensive visualisation tool such as Tableau. I used ggplot2 to visualise my findings a gain a better understanding of the results. 
+
+```{r}
+all_trips_22_v2 %>% 
+    mutate(weekday = wday(started_at, label = TRUE)) %>% 
+    group_by(member_casual, weekday) %>% 
+    summarise(number_of_rides = n()
+              ,average_duration = mean(ride_length_secs)) %>% 
+    arrange(member_casual, weekday)  %>% 
+    ggplot(aes(x = weekday, y = number_of_rides, fill = member_casual)) +
+    geom_col(position = "dodge") + labs(title = "Number of Rides by Rider Type", subtitle = "Cyclistic Trip Data")
+
+all_trips_22_v2 %>% 
+    mutate(weekday = wday(started_at, label = TRUE)) %>% 
+    group_by(member_casual, weekday) %>% 
+    summarise(number_of_rides = n()
+              ,average_duration = mean(ride_length_secs)) %>% 
+    arrange(member_casual, weekday)  %>% 
+    ggplot(aes(x = weekday, y = average_duration, fill = member_casual)) +
+    geom_col(position = "dodge") + labs(title = "Average Duration", subtitle = "Cyclistic Trip Data")
+
+```
+
+## Creating and exporting files
+After visualising my findings on ggplot I then decide to export the newly create dataframes of the findings into csv files for importing into Tableau. I used the write.csv() function to write the csv files onto my computer in the relevant folder. 
+
+```{r}
+counts <- aggregate(all_trips_22_v2$ride_length_secs ~ all_trips_22_v2$member_casual + all_trips_22_v2$day_of_week, FUN = mean)
+write.csv(counts, file = "~/Documents/Google Data Analytics Certificate/Case Study 1/cyclistic_summary.csv")
+
+write.csv(aggregate_max_member_casual, file = "~/Documents/Google Data Analytics Certificate/Case Study 1/aggregate_max_member_casual.csv")
+
+write.csv(aggregate_mean_member_casual, file = "~/Documents/Google Data Analytics Certificate/Case Study 1/aggregate_mean_member_casual.csv")
+
+write.csv(aggregate_median_member_casual, file = "~/Documents/Google Data Analytics Certificate/Case Study 1/aggregate_median_member_casual.csv")
+
+write.csv(aggregate_min_member_casual, file = "~/Documents/Google Data Analytics Certificate/Case Study 1/aggregate_min_member_casual.csv")
+
+write.csv(agg_avg_ride_time_member_casual, file = "~/Documents/Google Data Analytics Certificate/Case Study 1/agg_avg_ride_time_member_casual.csv")
+```
+
+
